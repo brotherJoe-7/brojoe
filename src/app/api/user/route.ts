@@ -50,38 +50,54 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-// GET — Export all user data (GDPR right to data portability)
+// GET — Return user profile settings OR export all data if ?export=true
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = (session.user as any).id;
+  const isExport = req.nextUrl.searchParams.get('export') === 'true';
 
   if (isSupabaseConfigured() && supabaseAdmin) {
     try {
-      const [{ data: expenses }, { data: tasks }, { data: reports }, { data: events }] = await Promise.all([
-        supabaseAdmin.from('expenses').select('*').eq('user_id', userId),
-        supabaseAdmin.from('tasks').select('*').eq('user_id', userId),
-        supabaseAdmin.from('reports').select('*').eq('user_id', userId),
-        supabaseAdmin.from('cal_events').select('*').eq('user_id', userId),
-      ]);
+      if (isExport) {
+        // Full GDPR data export
+        const [{ data: user }, { data: expenses }, { data: tasks }, { data: reports }, { data: events }] = await Promise.all([
+          supabaseAdmin.from('users').select('id, name, email, role, mentor_email, cal_link, total_budget, created_at').eq('id', userId).single(),
+          supabaseAdmin.from('expenses').select('*').eq('user_id', userId),
+          supabaseAdmin.from('tasks').select('*').eq('user_id', userId),
+          supabaseAdmin.from('reports').select('*').eq('user_id', userId),
+          supabaseAdmin.from('cal_events').select('*').eq('user_id', userId),
+        ]);
+        const exportData = {
+          exportedAt: new Date().toISOString(),
+          user, expenses: expenses || [], tasks: tasks || [], reports: reports || [], events: events || [],
+        };
+        return new NextResponse(JSON.stringify(exportData, null, 2), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Disposition': `attachment; filename="brojoe-data-export-${new Date().toISOString().split('T')[0]}.json"`,
+          },
+        });
+      }
 
-      const exportData = {
-        exportedAt: new Date().toISOString(),
-        user: { id: userId, email: session.user.email, name: session.user.name },
-        expenses: expenses || [],
-        tasks: tasks || [],
-        reports: reports || [],
-        events: events || [],
-      };
-
-      return new NextResponse(JSON.stringify(exportData, null, 2), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Disposition': `attachment; filename="brojoe-data-export-${new Date().toISOString().split('T')[0]}.json"`,
-        },
+      // Default: return profile/settings for Settings page
+      const { data: user, error } = await supabaseAdmin
+        .from('users')
+        .select('id, name, email, role, mentor_email, cal_link, total_budget')
+        .eq('id', userId)
+        .single();
+      if (error) throw error;
+      return NextResponse.json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        mentorEmail: user.mentor_email || '',
+        calLink: user.cal_link || '',
+        totalBudget: user.total_budget || 0,
       });
     } catch (err) {
-      return NextResponse.json({ error: 'Export failed.' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to fetch profile.' }, { status: 500 });
     }
   }
 

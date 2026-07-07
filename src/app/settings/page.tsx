@@ -38,7 +38,7 @@ export default function SettingsPage() {
   };
 
   const handleExport = async () => {
-    const res = await fetch('/api/user');
+    const res = await fetch('/api/user?export=true');
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
