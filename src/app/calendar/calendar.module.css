@@ -342,9 +342,16 @@
   .quickStats { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 768px) {
-  .dayCell { min-height: 60px; }
-  .dayNum { width: 20px; height: 20px; font-size: 0.7rem; }
-  .eventPill { display: none; }
+  .dayCell { min-height: 70px; padding: 2px; }
+  .dayNum { width: 20px; height: 20px; font-size: 0.7rem; margin: 0 auto 2px; }
+  .eventPill { 
+    font-size: 0.55rem; 
+    padding: 2px 3px; 
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .quickStats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .calMonthLabel { font-size: 1rem; min-width: 140px; }
   .modalGrid { grid-template-columns: 1fr; }
