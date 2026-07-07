@@ -94,7 +94,7 @@ export default async function LandingPage() {
           <div className={`${styles.pricingCard} ${styles.pricingCardPopular}`}>
             <span className={styles.popularBadge}>Most Popular</span>
             <h3 className={styles.tierName}>Professional</h3>
-            <div className={styles.tierPrice}>$9<span className={styles.tierMo}>/mo</span></div>
+            <div className={styles.tierPrice}>$5<span className={styles.tierMo}>/mo</span></div>
             <ul className={styles.tierFeatures}>
               <li className={styles.tierFeature}><CheckCircle2 size={18} color="var(--primary)" /> Everything in Basic</li>
               <li className={styles.tierFeature}><CheckCircle2 size={18} color="var(--primary)" /> AI Receipt Scanning (OCR)</li>
@@ -109,7 +109,7 @@ export default async function LandingPage() {
           {/* Empire */}
           <div className={styles.pricingCard}>
             <h3 className={styles.tierName}>Empire / Boss</h3>
-            <div className={styles.tierPrice}>$29<span className={styles.tierMo}>/mo</span></div>
+            <div className={styles.tierPrice}>$15<span className={styles.tierMo}>/mo</span></div>
             <ul className={styles.tierFeatures}>
               <li className={styles.tierFeature}><CheckCircle2 size={18} color="var(--primary)" /> Everything in Pro</li>
               <li className={styles.tierFeature}><CheckCircle2 size={18} color="var(--primary)" /> Team Workspaces (RBAC)</li>
