@@ -36,6 +36,9 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [roleChanges, setRoleChanges] = useState<Record<string, string>>({});
+  const [savingRole, setSavingRole] = useState<string | null>(null);
+  const [roleMsg, setRoleMsg] = useState<Record<string, string>>({});
 
   const fetchStats = () => {
     setLoading(true);
@@ -43,13 +46,33 @@ export default function AdminPage() {
       .then(r => r.json())
       .then(data => {
         if (data.error) setError(data.error);
-        else setStats(data);
+        else {
+          setStats(data);
+          // Pre-fill role dropdowns with current roles
+          const roleInit: Record<string, string> = {};
+          (data.recentUsers || []).forEach((u: any) => { roleInit[u.id] = u.role; });
+          setRoleChanges(roleInit);
+        }
         setLoading(false);
       })
       .catch(() => {
         setError('Failed to load admin stats.');
         setLoading(false);
       });
+  };
+
+  const updateRole = async (userId: string) => {
+    setSavingRole(userId);
+    const res = await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, role: roleChanges[userId] }),
+    });
+    const data = await res.json();
+    setRoleMsg(prev => ({ ...prev, [userId]: res.ok ? '✓ Saved' : data.error }));
+    setSavingRole(null);
+    setTimeout(() => setRoleMsg(prev => { const n = { ...prev }; delete n[userId]; return n; }), 2000);
+    if (res.ok) fetchStats();
   };
 
   useEffect(() => {
@@ -203,9 +226,31 @@ export default function AdminPage() {
                           </td>
                           <td className="text-secondary text-sm">{u.email}</td>
                           <td>
-                            <span className="chip" style={{ background: `${ROLE_COLORS[u.role] || '#888'}22`, color: ROLE_COLORS[u.role] || '#888', textTransform: 'capitalize' }}>
-                              {u.role}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <select
+                                value={roleChanges[u.id] || u.role}
+                                onChange={e => setRoleChanges(prev => ({ ...prev, [u.id]: e.target.value }))}
+                                style={{
+                                  background: `${ROLE_COLORS[roleChanges[u.id] || u.role] || '#888'}22`,
+                                  color: ROLE_COLORS[roleChanges[u.id] || u.role] || '#888',
+                                  border: `1px solid ${ROLE_COLORS[roleChanges[u.id] || u.role] || '#888'}44`,
+                                  borderRadius: 6, padding: '3px 6px', fontSize: '0.78rem',
+                                  fontWeight: 600, cursor: 'pointer',
+                                }}
+                              >
+                                {['user','assistant','mentor','admin','accountant'].map(r => (
+                                  <option key={r} value={r}>{r}</option>
+                                ))}
+                              </select>
+                              <button
+                                className="btn btn-primary btn-sm"
+                                style={{ padding: '3px 10px', fontSize: '0.75rem' }}
+                                onClick={() => updateRole(u.id)}
+                                disabled={savingRole === u.id}
+                              >
+                                {savingRole === u.id ? '...' : roleMsg[u.id] || 'Save'}
+                              </button>
+                            </div>
                           </td>
                           <td className="text-sm text-secondary" style={{ textTransform: 'capitalize' }}>{u.account_type || 'individual'}</td>
                           <td className="text-sm text-muted">{u.created_at ? format(new Date(u.created_at), 'MMM d, yyyy') : '—'}</td>
