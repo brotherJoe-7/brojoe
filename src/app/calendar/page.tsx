@@ -673,18 +673,21 @@ export default function CalendarPage() {
                   </p>
                   
                   {form.description && (
-                    <div style={{ marginTop: 12, padding: 16, background: 'var(--bg-base)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-                      <p style={{ fontSize: '0.85rem', whiteSpace: 'pre-wrap', margin: 0 }}>{form.description}</p>
+                    <div style={{ marginTop: 12, padding: '20px 16px', background: 'var(--bg-base)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', maxHeight: '400px', overflowY: 'auto' }}>
+                      <p style={{ fontSize: '0.9rem', whiteSpace: 'pre-wrap', margin: 0, lineHeight: '1.6' }}>{form.description}</p>
                     </div>
                   )}
                 </div>
 
-                <div className="modal-footer" style={{ marginTop: 32 }}>
+                <div className="modal-footer" style={{ marginTop: 32, display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'flex-end' }}>
                   {editEvent && (
-                    <button className="btn btn-danger" onClick={() => deleteEvent(editEvent._id)} style={{ marginRight: 'auto' }}>
+                    <button className="btn btn-danger" onClick={() => deleteEvent(editEvent._id)}>
                       <Trash2 size={15} /> Delete
                     </button>
                   )}
+                  <button className="btn btn-primary" onClick={() => openCreate(parseISO(form.date))}>
+                    <Plus size={15} /> Add Event
+                  </button>
                   <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
                   <button className="btn btn-primary" onClick={() => setIsReadOnly(false)}>Edit Event</button>
                 </div>
