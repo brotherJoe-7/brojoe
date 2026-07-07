@@ -174,13 +174,17 @@ export async function POST(req: NextRequest) {
 
   // ── PULL: Import Google Calendar events → BroJoe ──────────────────
   try {
-    const now = new Date().toISOString();
+    // Pull from 90 days ago up to 90 days in the future so we catch past events too
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 90);
+    const past = pastDate.toISOString();
+
     const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 60);
+    futureDate.setDate(futureDate.getDate() + 90);
     const future = futureDate.toISOString();
 
     const pullRes = await fetch(
-      `${GCAL_API}/calendars/primary/events?timeMin=${now}&timeMax=${future}&singleEvents=true&orderBy=startTime&maxResults=50`,
+      `${GCAL_API}/calendars/primary/events?timeMin=${past}&timeMax=${future}&singleEvents=true&orderBy=startTime&maxResults=250`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 

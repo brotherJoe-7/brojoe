@@ -74,10 +74,29 @@ export default function CalendarPage() {
       })
       .catch(() => {});
 
-    // Check if user has Google Calendar connected
+    // Check if user has Google Calendar connected, then auto-pull silently
     fetch('/api/calendar/google/sync')
       .then(r => r.json())
-      .then(data => setGConnected(!!data.connected))
+      .then(data => {
+        const connected = !!data.connected;
+        setGConnected(connected);
+        // Auto-pull new Google events silently on every page load
+        if (connected) {
+          fetch('/api/calendar/google/sync', { method: 'POST' })
+            .then(r => r.json())
+            .then(syncData => {
+              if (syncData.pulled > 0) {
+                // Refresh events list if new events were pulled in
+                const monthStr2 = format(current, 'yyyy-MM');
+                fetch(`/api/events?month=${monthStr2}`)
+                  .then(r => r.json())
+                  .then(evData => { if (Array.isArray(evData)) setEvents(evData); })
+                  .catch(() => {});
+              }
+            })
+            .catch(() => {});
+        }
+      })
       .catch(() => {});
 
     const monthStr = format(current, 'yyyy-MM');
