@@ -141,7 +141,11 @@ export default function CalendarPage() {
   const openCreate = (day?: Date) => {
     setEditEvent(null);
     setForm({ ...blank(), date: format(day ?? new Date(), 'yyyy-MM-dd') });
-    setIsReadOnly(true);
+    setIsReadOnly(false);
+    setShowModal(true);
+  };
+  const openDayView = (day: Date) => {
+    setSelectedDay(day);
     setShowModal(true);
   };
   const openEdit = (ev: any) => {
@@ -324,6 +328,7 @@ export default function CalendarPage() {
                       <div
                         key={i}
                         className={`${styles.dayCell} ${!inMonth ? styles.dayCellOtherMonth : ''} ${today ? styles.dayCellToday : ''}`}
+                        onClick={() => openDayView(day)}
                       >
                         <span className={`${styles.dayNum} ${today ? styles.dayNumToday : ''}`}>
                           {format(day, 'd')}
@@ -545,18 +550,66 @@ export default function CalendarPage() {
         </div>
       </main>
 
-      {/* ── Event Modal ── */}
+      {/* ── Event / Day View Modal ── */}
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="modal-overlay" onClick={() => { setShowModal(false); setSelectedDay(null); }}>
           <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 560 }}>
             <div className="modal-header">
-              <h3>{isReadOnly ? 'Event Details' : editEvent ? 'Edit Event' : 'New Event'}</h3>
-              <button className="btn btn-ghost btn-icon" onClick={() => setShowModal(false)}>
+              <h3>
+                {selectedDay 
+                  ? `Events for ${format(selectedDay, 'MMM d, yyyy')}` 
+                  : isReadOnly ? 'Event Details' : editEvent ? 'Edit Event' : 'New Event'}
+              </h3>
+              <button className="btn btn-ghost btn-icon" onClick={() => { setShowModal(false); setSelectedDay(null); }}>
                 <X size={18} />
               </button>
             </div>
 
-            {isReadOnly ? (
+            {selectedDay ? (
+              <div style={{ paddingTop: 8 }}>
+                {eventsOnDay(selectedDay).length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+                    <Calendar size={32} style={{ margin: '0 auto 12px', display: 'block', color: 'var(--border)' }} />
+                    <p style={{ margin: 0 }}>No events scheduled for this day.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {eventsOnDay(selectedDay).map(ev => {
+                      const t = typeInfo(ev.type);
+                      const Icon = t.icon;
+                      return (
+                        <div key={ev._id} className="card hover-elevate" style={{ padding: 16, cursor: 'pointer', borderLeft: `4px solid ${t.color}` }} onClick={() => { setSelectedDay(null); openView(ev); }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div>
+                              <h4 style={{ margin: '0 0 6px', fontSize: '1.05rem', color: 'var(--text-primary)' }}>{ev.title}</h4>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <Clock size={14} /> {ev.allDay ? 'All Day' : `${ev.startTime} - ${ev.endTime}`}
+                                </span>
+                                {ev.location && (
+                                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                    <MapPin size={14} /> {ev.location}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div style={{ background: t.bg, padding: 8, borderRadius: '50%', color: t.color }}>
+                              <Icon size={18} />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                <div className="modal-footer" style={{ marginTop: 24, paddingBottom: 0 }}>
+                  <button className="btn btn-secondary" onClick={() => { setShowModal(false); setSelectedDay(null); }}>Close</button>
+                  <button className="btn btn-primary" onClick={() => { setSelectedDay(null); openCreate(selectedDay); }}>
+                    <Plus size={16} /> Add Event
+                  </button>
+                </div>
+              </div>
+            ) : isReadOnly ? (
               <div className={styles.modalGrid} style={{ paddingTop: 8 }}>
                 <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 16 }}>{form.title || 'Untitled Event'}</h2>
                 
