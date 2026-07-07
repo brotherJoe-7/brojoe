@@ -69,8 +69,8 @@ function googleToBroJoe(gEvent: any, userId: string) {
   const end = gEvent.end?.dateTime || gEvent.end?.date;
 
   const dateStr = start ? start.split('T')[0] : new Date().toISOString().split('T')[0];
-  const startTime = start?.includes('T') ? start.split('T')[1]?.slice(0, 5) : null;
-  const endTime = end?.includes('T') ? end.split('T')[1]?.slice(0, 5) : null;
+  const startTime = start?.includes('T') ? start.split('T')[1]?.slice(0, 5) : '';
+  const endTime = end?.includes('T') ? end.split('T')[1]?.slice(0, 5) : '';
 
   return {
     user_id: userId,
@@ -83,6 +83,7 @@ function googleToBroJoe(gEvent: any, userId: string) {
     type: 'meeting', // default for imported Google events
     google_event_id: gEvent.id,
     synced_from_google: true,
+    all_day: !start?.includes('T'),
   };
 }
 
