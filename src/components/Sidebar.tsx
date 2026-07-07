@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import {
   LayoutDashboard, Wallet, CheckSquare, FileText, User,
-  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users
+  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users, Crown
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -66,6 +66,14 @@ export default function Sidebar() {
             <Shield size={18} />
             <span>Mentor Console</span>
             {pathname.startsWith('/mentor') && <ChevronRight size={14} className={styles.activeArrow} />}
+          </Link>
+        )}
+        {session?.user?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL && (
+          <Link href="/admin" className={`${styles.navItem} ${pathname.startsWith('/admin') ? styles.active : ''}`}
+            style={{ borderColor: 'rgba(244,63,94,0.3)', color: '#f43f5e' }}>
+            <Crown size={18} />
+            <span>Super Admin</span>
+            {pathname.startsWith('/admin') && <ChevronRight size={14} className={styles.activeArrow} />}
           </Link>
         )}
       </nav>

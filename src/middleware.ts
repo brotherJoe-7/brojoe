@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 const { auth } = NextAuth(authConfig as any);
 
-const protectedRoutes = ['/dashboard', '/expenses', '/tasks', '/reports', '/portfolio', '/settings', '/calendar', '/team', '/mentor'];
+const protectedRoutes = ['/dashboard', '/expenses', '/tasks', '/reports', '/portfolio', '/settings', '/calendar', '/team', '/mentor', '/admin'];
 const authRoutes = ['/login', '/register'];
 
 export default auth((req: any) => {
