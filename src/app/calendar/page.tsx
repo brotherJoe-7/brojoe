@@ -54,10 +54,13 @@ export default function CalendarPage() {
   const [calLink, setCalLink] = useState('');
   const [showBooking, setShowBooking] = useState(false);
   const [tab, setTab] = useState<'calendar'|'booking'>('calendar');
+  const [gSyncing, setGSyncing] = useState(false);
+  const [gSyncMsg, setGSyncMsg] = useState<{text: string; ok: boolean} | null>(null);
+  const [gConnected, setGConnected] = useState(false);
 
   useEffect(() => { if (status === 'unauthenticated') router.push('/login'); }, [status, router]);
 
-  /* Fetch events and profile */
+  /* Fetch events, profile, and Google Calendar status */
   useEffect(() => {
     if (status !== 'authenticated') return;
     
@@ -71,15 +74,46 @@ export default function CalendarPage() {
       })
       .catch(() => {});
 
+    // Check if user has Google Calendar connected
+    fetch('/api/calendar/google/sync')
+      .then(r => r.json())
+      .then(data => setGConnected(!!data.connected))
+      .catch(() => {});
+
     const monthStr = format(current, 'yyyy-MM');
     fetch(`/api/events?month=${monthStr}`)
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) setEvents(data);
-        // else keep demo data
       })
       .catch(() => {});
   }, [status, current]);
+
+  const syncGoogleCalendar = async () => {
+    setGSyncing(true);
+    setGSyncMsg(null);
+    try {
+      const res = await fetch('/api/calendar/google/sync', { method: 'POST' });
+      const data = await res.json();
+      if (data.needsReauth) {
+        setGSyncMsg({ text: '⚠️ Please sign out and sign back in with Google to grant calendar access.', ok: false });
+      } else if (data.success) {
+        setGSyncMsg({ text: data.message, ok: true });
+        // Refresh events after sync
+        const monthStr = format(current, 'yyyy-MM');
+        const evRes = await fetch(`/api/events?month=${monthStr}`);
+        const evData = await evRes.json();
+        if (Array.isArray(evData)) setEvents(evData);
+        setGConnected(true);
+      } else {
+        setGSyncMsg({ text: data.error || 'Sync failed.', ok: false });
+      }
+    } catch {
+      setGSyncMsg({ text: 'Network error during sync.', ok: false });
+    }
+    setGSyncing(false);
+    setTimeout(() => setGSyncMsg(null), 6000);
+  };
 
   /* Build calendar grid */
   const grid = useMemo(() => {
@@ -181,7 +215,24 @@ export default function CalendarPage() {
                 <h1>Calendar & Bookings</h1>
                 <p className="text-secondary">Manage your schedule, errands, sessions, and bookings</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2" style={{ flexWrap: 'wrap' }}>
+                {/* Google Calendar Sync Button */}
+                <button
+                  className={`btn ${gConnected ? 'btn-secondary' : 'btn-ghost'}`}
+                  onClick={syncGoogleCalendar}
+                  disabled={gSyncing}
+                  title={gConnected ? 'Sync with Google Calendar' : 'Connect Google Calendar'}
+                  style={{
+                    border: gConnected ? '1px solid rgba(66,133,244,0.5)' : '1px dashed var(--border)',
+                    color: '#4285f4',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#4285f4">
+                    <path d="M19.5 3H18V1.5A1.5 1.5 0 0 0 16.5 0h-1A1.5 1.5 0 0 0 14 1.5V3H10V1.5A1.5 1.5 0 0 0 8.5 0h-1A1.5 1.5 0 0 0 6 1.5V3H4.5A4.5 4.5 0 0 0 0 7.5v12A4.5 4.5 0 0 0 4.5 24h15A4.5 4.5 0 0 0 24 19.5v-12A4.5 4.5 0 0 0 19.5 3zM22 19.5A2.5 2.5 0 0 1 19.5 22H4.5A2.5 2.5 0 0 1 2 19.5V10h20z"/>
+                  </svg>
+                  {gSyncing ? 'Syncing...' : gConnected ? 'Sync Google' : 'Connect Google Cal'}
+                </button>
                 <button
                   className={`btn ${tab === 'calendar' ? 'btn-primary' : 'btn-secondary'}`}
                   onClick={() => setTab('calendar')}
@@ -199,6 +250,18 @@ export default function CalendarPage() {
                 </button>
               </div>
             </div>
+            {/* Sync status message */}
+            {gSyncMsg && (
+              <div style={{
+                marginTop: 12, padding: '10px 16px', borderRadius: 10,
+                background: gSyncMsg.ok ? 'rgba(16,185,129,0.12)' : 'rgba(244,63,94,0.12)',
+                border: `1px solid ${gSyncMsg.ok ? 'rgba(16,185,129,0.3)' : 'rgba(244,63,94,0.3)'}`,
+                color: gSyncMsg.ok ? 'var(--secondary)' : 'var(--danger)',
+                fontSize: '0.875rem',
+              }}>
+                {gSyncMsg.text}
+              </div>
+            )}
           </div>
 
           {/* Quick stats */}
