@@ -483,5 +483,11 @@ tr:last-child td { border-bottom: none; }
 .gradient-text {
   color: var(--primary);
 }
-@ m e d i a   ( m a x - w i d t h :   7 6 8 p x )   {   . h i d d e n - m o b i l e   {   d i s p l a y :   n o n e   ! i m p o r t a n t ;   }   . f a b - m o b i l e   {   d i s p l a y :   f l e x   ! i m p o r t a n t ;   }   }   @ m e d i a   ( m i n - w i d t h :   7 6 9 p x )   {   . f a b - m o b i l e   {   d i s p l a y :   n o n e   ! i m p o r t a n t ;   }   }  
- 
+
+@media (max-width: 768px) {
+  .hidden-mobile { display: none !important; }
+  .fab-mobile { display: flex !important; }
+}
+@media (min-width: 769px) {
+  .fab-mobile { display: none !important; }
+}
