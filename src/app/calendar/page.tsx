@@ -149,8 +149,9 @@ export default function CalendarPage() {
     setForm({
       title: ev.title, description: ev.description || '',
       date: format(new Date(ev.date), 'yyyy-MM-dd'),
-      startTime: ev.startTime || '09:00', endTime: ev.endTime || '10:00',
-      type: ev.type, allDay: ev.allDay, recurring: ev.recurring || 'none', location: ev.location || '',
+      startTime: ev.startTime || (ev.allDay ? '' : '09:00'), 
+      endTime: ev.endTime || (ev.allDay ? '' : '10:00'),
+      type: ev.type, allDay: !!ev.allDay, recurring: ev.recurring || 'none', location: ev.location || '',
     });
     setIsReadOnly(false);
     setShowModal(true);
@@ -323,7 +324,6 @@ export default function CalendarPage() {
                       <div
                         key={i}
                         className={`${styles.dayCell} ${!inMonth ? styles.dayCellOtherMonth : ''} ${today ? styles.dayCellToday : ''}`}
-                        onClick={() => openCreate(day)}
                       >
                         <span className={`${styles.dayNum} ${today ? styles.dayNumToday : ''}`}>
                           {format(day, 'd')}
