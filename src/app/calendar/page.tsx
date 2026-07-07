@@ -636,8 +636,8 @@ export default function CalendarPage() {
                 </div>
               </div>
             ) : isReadOnly ? (
-              <div className={styles.modalGrid} style={{ paddingTop: 8 }}>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 16 }}>{form.title || 'Untitled Event'}</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', paddingTop: 8 }}>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 20 }}>{form.title || 'Untitled Event'}</h2>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: 'var(--text-secondary)' }}>
                   <p style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
