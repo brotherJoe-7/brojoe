@@ -36,16 +36,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* User */}
-      <div className={styles.userCard}>
-        <div className={styles.avatar}>
-          {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
-        </div>
-        <div className={styles.userInfo}>
-          <span className={styles.userName}>{session?.user?.name || 'User'}</span>
-          <span className={styles.userEmail}>{session?.user?.email || ''}</span>
-        </div>
-      </div>
+
 
       {/* Navigation */}
       <nav className={styles.nav}>
@@ -91,11 +82,24 @@ export default function Sidebar() {
           <Shield size={18} />
           <span>Privacy</span>
         </Link>
-        <button onClick={() => signOut({ callbackUrl: '/login' })} className={styles.signOut}>
-          <LogOut size={18} />
-          <span>Sign Out</span>
-        </button>
       </nav>
+
+      {/* Footer Area with User Card & Sign Out */}
+      <div className={styles.sidebarFooter}>
+        <div className={styles.userCard}>
+          <div className={styles.avatar}>
+            {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+          </div>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>{session?.user?.name || 'User'}</span>
+            <span className={styles.userEmail}>{session?.user?.email || ''}</span>
+          </div>
+        </div>
+        <button onClick={() => signOut({ callbackUrl: '/login' })} className={styles.signOutBtn}>
+          <LogOut size={16} />
+          <span>Sign Out of Platform</span>
+        </button>
+      </div>
 
       {/* Version */}
       <div className={styles.version}>BroJoe v1.0.0</div>
