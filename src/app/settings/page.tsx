@@ -1,6 +1,6 @@
 'use client';
 // src/app/settings/page.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Sidebar from '@/components/Sidebar';
 import { User, Bell, Shield, Database, Save, Check } from 'lucide-react';
@@ -11,14 +11,25 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [budget, setBudget] = useState('');
   const [mentorEmail, setMentorEmail] = useState('');
+  const [calLink, setCalLink] = useState('');
   const [notifications, setNotifications] = useState(true);
   const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/user').then(r => r.json()).then(data => {
+      if (data) {
+        setMentorEmail(data.mentorEmail || '');
+        setCalLink(data.calLink || '');
+        // We'll leave budget empty unless it's stored, but user settings API returns user
+      }
+    });
+  }, []);
 
   const handleSave = async () => {
     const res = await fetch('/api/user', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mentorEmail, totalBudget: parseFloat(budget) || 0 }),
+      body: JSON.stringify({ mentorEmail, calLink, totalBudget: parseFloat(budget) || 0 }),
     });
     if (res.ok) {
       setSaved(true);
@@ -78,6 +89,22 @@ export default function SettingsPage() {
                   <label className="form-label">Boss/Manager Email (for report sharing)</label>
                   <input id="mentor-email" className="form-control" placeholder="boss@example.com"
                     value={mentorEmail} onChange={e => setMentorEmail(e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Public Profile & Booking */}
+            <div className="card mb-5">
+              <div className="flex items-center gap-2 mb-4">
+                <User size={18} color="var(--primary-light)" />
+                <h3>Public Profile & Booking</h3>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div className="form-group">
+                  <label className="form-label">Cal.com Profile Link</label>
+                  <input id="cal-link" className="form-control" placeholder="e.g. joseph-nimneh-yjypl3"
+                    value={calLink} onChange={e => setCalLink(e.target.value)} />
+                  <span className="text-xs text-muted">Paste your Cal.com username to enable bookings in the platform</span>
                 </div>
               </div>
             </div>

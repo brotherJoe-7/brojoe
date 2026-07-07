@@ -1,11 +1,12 @@
 'use client';
 // src/components/Sidebar.tsx
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import {
   LayoutDashboard, Wallet, CheckSquare, FileText, User,
-  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users, Crown
+  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users, Crown, Menu, X
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -22,9 +23,28 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside className={styles.sidebar}>
+    <>
+      {/* Mobile Hamburger Button */}
+      <button 
+        className={styles.hamburgerBtn} 
+        onClick={() => setMobileOpen(true)}
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Backdrop for mobile */}
+      {mobileOpen && (
+        <div className={styles.mobileBackdrop} onClick={() => setMobileOpen(false)} />
+      )}
+
+      <aside className={`${styles.sidebar} ${mobileOpen ? styles.mobileOpen : ''}`}>
+        {/* Mobile Close Button */}
+        <button className={styles.closeBtn} onClick={() => setMobileOpen(false)}>
+          <X size={24} />
+        </button>
       {/* Brand */}
       <div className={styles.brand}>
         <div className={styles.brandIcon}>
@@ -44,7 +64,12 @@ export default function Sidebar() {
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname.startsWith(href);
           return (
-            <Link key={href} href={href} className={`${styles.navItem} ${active ? styles.active : ''}`}>
+            <Link 
+              key={href} 
+              href={href} 
+              className={`${styles.navItem} ${active ? styles.active : ''}`}
+              onClick={() => setMobileOpen(false)}
+            >
               <Icon size={18} />
               <span>{label}</span>
               {active && <ChevronRight size={14} className={styles.activeArrow} />}
@@ -104,5 +129,6 @@ export default function Sidebar() {
       {/* Version */}
       <div className={styles.version}>BroJoe v1.0.0</div>
     </aside>
+    </>
   );
 }

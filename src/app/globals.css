@@ -362,6 +362,16 @@ tr:last-child td { border-bottom: none; }
   padding: 32px;
   flex: 1;
 }
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .page-content {
+    padding: 72px 16px 24px; /* 72px top to clear hamburger button */
+  }
+}
 .page-header {
   margin-bottom: 28px;
 }
