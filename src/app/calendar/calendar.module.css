@@ -1,0 +1,351 @@
+/* src/app/calendar/calendar.module.css */
+
+.calendarWrap {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* ── Header ─────────────────────────────────────── */
+.calHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.calNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.calNavBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+.calNavBtn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--primary);
+}
+.calMonthLabel {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 180px;
+  text-align: center;
+}
+.viewToggle {
+  display: flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.viewBtn {
+  padding: 7px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.viewBtnActive {
+  background: var(--primary);
+  color: white;
+}
+
+/* ── Grid ─────────────────────────────────────────── */
+.calGrid {
+  flex: 1;
+  min-width: 0;
+}
+.dayLabels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+.dayLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 8px 0;
+}
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.dayCell {
+  min-height: 100px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.dayCell:hover {
+  border-color: var(--primary);
+  background: var(--bg-card-hover);
+}
+.dayCellOtherMonth {
+  opacity: 0.35;
+}
+.dayCellToday {
+  border-color: var(--primary) !important;
+  background: rgba(217, 119, 87, 0.06);
+}
+.dayNum {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.dayNumToday {
+  background: var(--primary);
+  color: white;
+}
+.eventPill {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.eventPill:hover { opacity: 0.8; }
+.moreEvents {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+
+/* ── Sidebar panel ────────────────────────────────── */
+.sidePanel {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Today's agenda ──────────────────────────────── */
+.agendaCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.agendaTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.agendaItem {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  align-items: flex-start;
+}
+.agendaItem:last-child { border-bottom: none; }
+.agendaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.agendaInfo { flex: 1; min-width: 0; }
+.agendaEventTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agendaTime {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.agendaEmpty {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Booking embed card ──────────────────────────── */
+.bookingCard {
+  background: var(--bg-card);
+  border: 1px solid rgba(217, 119, 87, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.bookingHero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.bookingIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(217, 119, 87, 0.15);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.bookingCardTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: block;
+}
+.bookingCardSub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.bookingInput {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  width: 100%;
+  outline: none;
+  transition: all var(--transition);
+  margin-bottom: 10px;
+}
+.bookingInput:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.calEmbedFrame {
+  width: 100%;
+  height: 500px;
+  border: none;
+  border-radius: var(--radius-md);
+  margin-top: 12px;
+}
+
+/* ── Quick stats row ─────────────────────────────── */
+.quickStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.quickStat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  text-align: center;
+}
+.quickStatVal {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: block;
+}
+.quickStatLabel {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Modal ───────────────────────────────────────── */
+.modalGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.fullWidth { grid-column: 1 / -1; }
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+.typeBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.typeBtn:hover, .typeBtnActive {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+  color: var(--primary);
+}
+.typeBtnActive {
+  color: var(--primary-light);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 1100px) {
+  .calendarWrap { flex-direction: column; }
+  .sidePanel { width: 100%; }
+  .quickStats { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .dayCell { min-height: 60px; }
+  .dayNum { width: 20px; height: 20px; font-size: 0.7rem; }
+  .eventPill { display: none; }
+  .quickStats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .calMonthLabel { font-size: 1rem; min-width: 140px; }
+  .modalGrid { grid-template-columns: 1fr; }
+}

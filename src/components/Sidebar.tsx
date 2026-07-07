@@ -1,0 +1,96 @@
+'use client';
+// src/components/Sidebar.tsx
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import {
+  LayoutDashboard, Wallet, CheckSquare, FileText, User,
+  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users
+} from 'lucide-react';
+import styles from './Sidebar.module.css';
+
+const navItems = [
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/calendar', icon: Calendar, label: 'Calendar & Bookings' },
+  { href: '/expenses', icon: Wallet, label: 'Expenses' },
+  { href: '/tasks', icon: CheckSquare, label: 'Tasks & Errands' },
+  { href: '/reports', icon: FileText, label: 'Reports & AI' },
+  { href: '/portfolio', icon: User, label: 'Portfolio' },
+  { href: '/team', icon: Users, label: 'Team Workspaces' },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+
+  return (
+    <aside className={styles.sidebar}>
+      {/* Brand */}
+      <div className={styles.brand}>
+        <div className={styles.brandIcon}>
+          <Sparkles size={20} />
+        </div>
+        <div>
+          <span className={styles.brandName}>BroJoe</span>
+          <span className={styles.brandSub}>Platform</span>
+        </div>
+      </div>
+
+      {/* User */}
+      <div className={styles.userCard}>
+        <div className={styles.avatar}>
+          {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+        </div>
+        <div className={styles.userInfo}>
+          <span className={styles.userName}>{session?.user?.name || 'User'}</span>
+          <span className={styles.userEmail}>{session?.user?.email || ''}</span>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className={styles.nav}>
+        <span className={styles.navSection}>Menu</span>
+        {navItems.map(({ href, icon: Icon, label }) => {
+          const active = pathname.startsWith(href);
+          return (
+            <Link key={href} href={href} className={`${styles.navItem} ${active ? styles.active : ''}`}>
+              <Icon size={18} />
+              <span>{label}</span>
+              {active && <ChevronRight size={14} className={styles.activeArrow} />}
+            </Link>
+          );
+        })}
+        
+        {(session?.user as any)?.role === 'mentor' && (
+          <Link href="/mentor" className={`${styles.navItem} ${pathname.startsWith('/mentor') ? styles.active : ''}`}>
+            <Shield size={18} />
+            <span>Mentor Console</span>
+            {pathname.startsWith('/mentor') && <ChevronRight size={14} className={styles.activeArrow} />}
+          </Link>
+        )}
+      </nav>
+
+      <div className={styles.divider} />
+
+      {/* Bottom */}
+      <nav className={styles.nav}>
+        <span className={styles.navSection}>Account</span>
+        <Link href="/settings" className={`${styles.navItem} ${pathname === '/settings' ? styles.active : ''}`}>
+          <Settings size={18} />
+          <span>Settings</span>
+        </Link>
+        <Link href="/privacy" className={`${styles.navItem} ${pathname === '/privacy' ? styles.active : ''}`}>
+          <Shield size={18} />
+          <span>Privacy</span>
+        </Link>
+        <button onClick={() => signOut({ callbackUrl: '/login' })} className={styles.signOut}>
+          <LogOut size={18} />
+          <span>Sign Out</span>
+        </button>
+      </nav>
+
+      {/* Version */}
+      <div className={styles.version}>BroJoe v1.0.0</div>
+    </aside>
+  );
+}

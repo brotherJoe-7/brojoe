@@ -1,0 +1,43 @@
+/* src/app/settings/settings.module.css */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+.toggleSwitch {
+  width: 44px; height: 24px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: background var(--transition);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggleSwitch.on { background: var(--primary); border-color: var(--primary); }
+.toggleThumb {
+  width: 18px; height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform var(--transition);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.toggleSwitch.on .toggleThumb { transform: translateX(20px); }
+
+.privacyItems { display: flex; flex-direction: column; gap: 12px; }
+.privacyItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--bg-input);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+.privacyLabel { font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 2px; }

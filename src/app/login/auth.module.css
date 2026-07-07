@@ -1,0 +1,148 @@
+/* src/app/login/auth.module.css */
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.authBg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb1, .orb2, .orb3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: float 6s ease-in-out infinite;
+}
+.orb1 {
+  width: 500px; height: 500px;
+  background: var(--primary);
+  top: -100px; left: -100px;
+  animation-delay: 0s;
+}
+.orb2 {
+  width: 400px; height: 400px;
+  background: var(--secondary);
+  bottom: -100px; right: -100px;
+  animation-delay: 2s;
+}
+.orb3 {
+  width: 300px; height: 300px;
+  background: var(--accent-info);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 4s;
+}
+
+.authCard {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(26, 26, 53, 0.9);
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  animation: slideUp 0.5s ease;
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.authLogo {
+  width: 52px;
+  height: 52px;
+  background: var(--grad-primary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: white;
+  box-shadow: 0 8px 24px rgba(108, 99, 255, 0.4);
+}
+
+.authTitle {
+  font-size: 1.75rem;
+  margin-bottom: 6px;
+}
+
+.authSub { color: var(--text-muted); font-size: 0.9rem; }
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+.inputWithIcon { padding-left: 38px !important; }
+.inputWithToggle { padding-right: 40px !important; }
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: color var(--transition);
+}
+.eyeBtn:hover { color: var(--text-primary); }
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+.authFooter {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.consentBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: var(--primary-glow);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.consentBox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.consentText { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
