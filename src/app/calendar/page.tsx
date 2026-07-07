@@ -353,9 +353,9 @@ export default function CalendarPage() {
             </div>
           ) : (
             /* ── Booking Tab ── */
-            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start', width: '100%' }}>
               {/* Instructions */}
-              <div style={{ flex: 1, minWidth: 280 }}>
+              <div style={{ flex: '1 1 300px', width: '100%' }}>
                 <div className="card mb-4" style={{ borderColor: 'rgba(217,119,87,0.3)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
                     <div style={{ width: 44, height: 44, background: 'rgba(217,119,87,0.15)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -441,7 +441,7 @@ export default function CalendarPage() {
 
               {/* Cal.com embed */}
               {showBooking && calLink ? (
-                <div style={{ flex: 1.5, minWidth: 320 }}>
+                <div style={{ flex: '1.5 1 320px', width: '100%' }}>
                   <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                     <iframe
                       src={calLink.startsWith('http') ? calLink : `https://cal.com/${calLink}`}
@@ -451,7 +451,7 @@ export default function CalendarPage() {
                   </div>
                 </div>
               ) : (
-                <div style={{ flex: 1.5, minWidth: 320 }}>
+                <div style={{ flex: '1.5 1 320px', width: '100%' }}>
                   <div className="card" style={{ textAlign: 'center', padding: 60, borderStyle: 'dashed', borderColor: 'rgba(217,119,87,0.3)' }}>
                     <Calendar size={48} style={{ margin: '0 auto 16px', color: 'var(--text-muted)' }} />
                     <h3 style={{ marginBottom: 8 }}>Booking Preview</h3>

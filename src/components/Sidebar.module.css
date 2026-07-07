@@ -139,6 +139,8 @@
 .sidebarFooter {
   margin-top: auto;
   padding-top: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .signOutBtn {
@@ -204,9 +206,39 @@
   display: none;
 }
 
+.mobileTopBar {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .hamburgerBtn {
     display: flex;
+  }
+  
+  .mobileTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 16px;
+  }
+  
+  .hamburgerBtn {
+    position: relative;
+    top: auto;
+    left: auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 8px;
+    margin-right: -8px;
   }
 
   .closeBtn {
@@ -244,6 +276,10 @@
   /* Reset all mobile overrides — show everything normally */
   .brand, .sidebarFooter, .navSection, .divider, .version, .nav {
     display: flex !important;
+  }
+  
+  .sidebarFooter {
+    flex-direction: column !important;
   }
 
   .brand { margin-bottom: 16px; }

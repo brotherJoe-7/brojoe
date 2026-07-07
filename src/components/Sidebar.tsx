@@ -27,13 +27,21 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Hamburger Button */}
-      <button 
-        className={styles.hamburgerBtn} 
-        onClick={() => setMobileOpen(true)}
-      >
-        <Menu size={24} />
-      </button>
+      {/* ── Mobile Top Bar ── */}
+      <div className={styles.mobileTopBar}>
+        <Link href="/dashboard" className={styles.brand} style={{ margin: 0, padding: 0 }}>
+          <div className={styles.brandIcon} style={{ width: 28, height: 28 }}>
+            <Sparkles size={16} />
+          </div>
+          <div>
+            <span className={styles.brandName} style={{ fontSize: '1rem' }}>BroJoe</span>
+            <span className={styles.brandSub} style={{ fontSize: '0.65rem' }}>Platform v2</span>
+          </div>
+        </Link>
+        <button className={styles.hamburgerBtn} onClick={() => setMobileOpen(true)}>
+          <Menu size={24} />
+        </button>
+      </div>
 
       {/* Backdrop for mobile */}
       {mobileOpen && (
