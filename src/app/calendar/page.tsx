@@ -141,7 +141,7 @@ export default function CalendarPage() {
   const openCreate = (day?: Date) => {
     setEditEvent(null);
     setForm({ ...blank(), date: format(day ?? new Date(), 'yyyy-MM-dd') });
-    setIsReadOnly(false);
+    setIsReadOnly(true);
     setShowModal(true);
   };
   const openEdit = (ev: any) => {
@@ -558,7 +558,7 @@ export default function CalendarPage() {
 
             {isReadOnly ? (
               <div className={styles.modalGrid} style={{ paddingTop: 8 }}>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 16 }}>{form.title}</h2>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 16 }}>{form.title || 'Untitled Event'}</h2>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: 'var(--text-secondary)' }}>
                   <p style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
