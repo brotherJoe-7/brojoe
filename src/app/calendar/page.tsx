@@ -173,6 +173,7 @@ export default function CalendarPage() {
         if (res.ok) {
           const updated = await res.json();
           setEvents(prev => prev.map(e => e._id === editEvent._id ? updated : e));
+          if (gConnected) fetch('/api/calendar/google/sync', { method: 'POST' });
         }
       } else {
         const res = await fetch('/api/events', {
@@ -182,6 +183,7 @@ export default function CalendarPage() {
         if (res.ok) {
           const created = await res.json();
           setEvents(prev => [...prev, created]);
+          if (gConnected) fetch('/api/calendar/google/sync', { method: 'POST' });
         } else {
           // offline demo mode — add locally
           setEvents(prev => [...prev, { ...payload, _id: `local-${Date.now()}` }]);
@@ -195,7 +197,10 @@ export default function CalendarPage() {
   };
 
   const deleteEvent = async (id: string) => {
-    try { await fetch(`/api/events/${id}`, { method: 'DELETE' }); } catch {}
+    try { 
+      await fetch(`/api/events/${id}`, { method: 'DELETE' }); 
+      if (gConnected) fetch('/api/calendar/google/sync', { method: 'POST' });
+    } catch {}
     setEvents(prev => prev.filter(e => e._id !== id));
     setShowModal(false);
   };
