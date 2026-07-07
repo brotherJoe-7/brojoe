@@ -143,10 +143,40 @@ export default function TasksPage() {
               <h1>Tasks & Errands</h1>
               <p className="text-secondary">Manage your errands, sub-tasks, priorities and deadlines</p>
             </div>
-            <button id="add-task-btn" onClick={openAdd} className="btn btn-primary">
-              <Plus size={18} /> Add Task
-            </button>
+            {/* Desktop Add Button */}
+            <div className="hidden-mobile">
+              <button id="add-task-btn" onClick={openAdd} className="btn btn-primary btn-lg" style={{ padding: '12px 24px', fontSize: '1rem', boxShadow: '0 8px 24px rgba(217,119,87,0.4)' }}>
+                <Plus size={20} /> Add New Task
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Floating Action Button (FAB) */}
+          <button
+            onClick={openAdd}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              position: 'fixed',
+              bottom: 24,
+              right: 24,
+              zIndex: 90,
+              background: 'var(--primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 30,
+              padding: '14px 24px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              boxShadow: '0 12px 32px rgba(217,119,87,0.5)',
+              cursor: 'pointer'
+            }}
+            className="fab-mobile"
+          >
+            <Plus size={20} /> Add Task
+          </button>
 
           {/* Stats */}
           <div className="grid-3 mb-6">

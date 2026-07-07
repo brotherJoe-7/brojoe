@@ -318,10 +318,10 @@ export default function ReportsPage() {
                         </div>
                         <div className="flex gap-1">
                           <button className="btn btn-ghost btn-icon btn-sm" title="Export PDF" onClick={() => exportToPDF(r)}>
-                            <Download size={13} />
+                            <Download size={14} />
                           </button>
-                          <button className="btn btn-success btn-icon btn-sm" title="Share to WhatsApp" onClick={() => shareWhatsApp(r)}>
-                            <Share2 size={13} />
+                          <button className="btn btn-success btn-sm" title="Share to WhatsApp" onClick={() => shareWhatsApp(r)} style={{ padding: '4px 10px', fontSize: '0.75rem', gap: 4 }}>
+                            <Share2 size={12} /> WhatsApp
                           </button>
                         </div>
                       </div>

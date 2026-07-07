@@ -1,11 +1,9 @@
 'use client';
 // src/components/Onboarding.tsx
-// A mobile-friendly onboarding modal with illustrations.
-// driver.js is NOT used here because on mobile the sidebar is hidden,
-// so we can't reliably point to nav items. Instead we use a clean
-// step-by-step card with icons and descriptions that runs once per device.
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 import {
   Wallet, Calendar, CheckSquare, Bot, Sparkles,
   ArrowRight, ArrowLeft, X
@@ -48,13 +46,37 @@ export default function Onboarding() {
   const { data: session } = useSession();
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     if (!session?.user) return;
     const key = `brojoe_tour_done_${session.user.email}`;
     if (!localStorage.getItem(key)) {
+      setIsMobile(window.innerWidth <= 768);
       // Small delay so page renders first
-      const t = setTimeout(() => setVisible(true), 800);
+      const t = setTimeout(() => {
+        if (window.innerWidth > 768) {
+          // Desktop: run driver.js
+          const d = driver({
+            showProgress: true,
+            steps: [
+              { element: 'body', popover: { title: 'Welcome! 🎉', description: 'Let\'s take a quick tour of your BroJoe command center.' } },
+              { element: 'a[href="/expenses"]', popover: { title: 'Expenses & Receipts 💰', description: 'Log your daily transport and scan receipts with AI here.' } },
+              { element: 'a[href="/tasks"]', popover: { title: 'Tasks & Errands ✅', description: 'Manage your daily to-do list in a Kanban board.' } },
+              { element: 'a[href="/calendar"]', popover: { title: 'Calendar & Bookings 📅', description: 'See your schedule and manage Cal.com bookings.' } },
+              { element: 'a[href="/reports"]', popover: { title: 'AI Reports 🤖', description: 'Generate clean end-of-day summaries for your boss.' } }
+            ],
+            onDestroyStarted: () => {
+              localStorage.setItem(key, '1');
+              d.destroy();
+            }
+          });
+          d.drive();
+        } else {
+          // Mobile: show custom modal
+          setVisible(true);
+        }
+      }, 1000);
       return () => clearTimeout(t);
     }
   }, [session]);
@@ -66,7 +88,7 @@ export default function Onboarding() {
     setVisible(false);
   };
 
-  if (!visible) return null;
+  if (!visible || !isMobile) return null;
 
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
@@ -98,7 +120,6 @@ export default function Onboarding() {
           animation: 'slideUp 0.35s cubic-bezier(0.4,0,0.2,1)',
         }}
       >
-        {/* Close */}
         <button
           onClick={dismiss}
           style={{
@@ -112,7 +133,6 @@ export default function Onboarding() {
           <X size={16} />
         </button>
 
-        {/* Icon */}
         <div style={{
           width: 80, height: 80,
           background: current.color,
@@ -123,22 +143,18 @@ export default function Onboarding() {
           {current.icon}
         </div>
 
-        {/* Step counter */}
         <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>
           Step {step + 1} of {STEPS.length}
         </p>
 
-        {/* Title */}
         <h2 style={{ textAlign: 'center', fontSize: '1.3rem', fontWeight: 700, marginBottom: 12 }}>
           {current.title}
         </h2>
 
-        {/* Description */}
         <p style={{ textAlign: 'center', color: 'var(--text-secondary)', lineHeight: 1.65, fontSize: '0.9rem', marginBottom: 28 }}>
           {current.desc}
         </p>
 
-        {/* Progress dots */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 28 }}>
           {STEPS.map((_, i) => (
             <div
@@ -156,7 +172,6 @@ export default function Onboarding() {
           ))}
         </div>
 
-        {/* Buttons */}
         <div style={{ display: 'flex', gap: 10 }}>
           {step > 0 && (
             <button

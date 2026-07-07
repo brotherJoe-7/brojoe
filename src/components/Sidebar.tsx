@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import {
   LayoutDashboard, Wallet, CheckSquare, FileText, User,
-  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users, Crown, Menu, X
+  LogOut, Sparkles, ChevronRight, Settings, Bell, Shield, Calendar, Users, Crown, Menu, X, ExternalLink
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -124,6 +124,7 @@ export default function Sidebar() {
         </Link>
       </nav>
 
+      <div className={styles.divider} />
       {/* Footer Area with User Card & Sign Out */}
       <div className={styles.sidebarFooter}>
         <div className={styles.userCard}>
@@ -135,10 +136,16 @@ export default function Sidebar() {
             <span className={styles.userEmail}>{session?.user?.email || ''}</span>
           </div>
         </div>
-        <button onClick={() => signOut({ callbackUrl: '/login' })} className={styles.signOutBtn}>
-          <LogOut size={16} />
-          <span>Sign Out of Platform</span>
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={() => signOut({ callbackUrl: '/login' })} className={styles.signOutBtn} style={{ flex: 1, padding: '10px' }}>
+            <LogOut size={16} />
+            <span>Sign Out</span>
+          </button>
+          <Link href="/" className="btn btn-secondary" style={{ flex: 1, padding: '10px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid var(--border)' }}>
+            <ExternalLink size={16} />
+            <span>Website</span>
+          </Link>
+        </div>
       </div>
 
       {/* Version */}

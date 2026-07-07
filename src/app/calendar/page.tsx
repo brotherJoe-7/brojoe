@@ -7,7 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import {
   ChevronLeft, ChevronRight, Plus, X, Calendar,
   Clock, MapPin, Users, Sparkles, Link2, Repeat,
-  BookOpen, Briefcase, ShoppingCart, User, Zap, Trash2
+  BookOpen, Briefcase, ShoppingCart, User, Zap, Trash2, Share2
 } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
   addDays, addMonths, subMonths, isSameMonth, isSameDay, isToday, parseISO } from 'date-fns';
@@ -386,19 +386,32 @@ export default function CalendarPage() {
                   </div>
 
                   {calLink && (
-                    <button
-                      className="btn btn-primary w-full"
-                      onClick={() => {
-                        setShowBooking(true);
-                        fetch('/api/user', {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ calLink })
-                        });
-                      }}
-                    >
-                      <Link2 size={16} /> Save & Load Booking Page
-                    </button>
+                    <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
+                      <button
+                        className="btn btn-primary w-full"
+                        onClick={() => {
+                          setShowBooking(true);
+                          fetch('/api/user', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ calLink })
+                          });
+                        }}
+                      >
+                        <Link2 size={16} /> Save & Load Booking Page
+                      </button>
+                      <button
+                        className="btn btn-success w-full"
+                        onClick={() => {
+                          const url = calLink.startsWith('http') ? calLink : `https://cal.com/${calLink}`;
+                          const text = encodeURIComponent(`Book a meeting with me here: ${url}`);
+                          window.open(`https://wa.me/?text=${text}`, '_blank');
+                        }}
+                        style={{ justifyContent: 'center' }}
+                      >
+                        <Share2 size={16} /> Share Link via WhatsApp
+                      </button>
+                    </div>
                   )}
                   {!calLink && (
                     <a
