@@ -108,25 +108,36 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'User not found.' }, { status: 404 });
   }
 
-  let accessToken = userData.google_access_token;
+  let accessToken: string | null = null;
 
-  if (!accessToken && !userData.google_refresh_token) {
+  if (!userData.google_refresh_token) {
+    // No refresh token means the user never granted calendar access
     return NextResponse.json({
       error: 'No Google Calendar access. Please sign out and sign back in with Google to grant calendar permissions.',
       needsReauth: true,
     }, { status: 403 });
   }
 
-  // Refresh token if expired or missing
-  if (!accessToken && userData.google_refresh_token) {
-    accessToken = await refreshGoogleToken(userData.google_refresh_token);
-    if (accessToken) {
-      await supabaseAdmin.from('users').update({ google_access_token: accessToken }).eq('id', userId);
-    }
+  // ALWAYS get a fresh access token using the refresh_token.
+  // Stored access tokens expire after 1 hour - never trust the stored one.
+  accessToken = await refreshGoogleToken(userData.google_refresh_token);
+
+  if (accessToken) {
+    // Save the new fresh token back to DB
+    await supabaseAdmin
+      .from('users')
+      .update({ google_access_token: accessToken })
+      .eq('id', userId);
+  } else {
+    // Refresh failed - fall back to stored token as last resort
+    accessToken = userData.google_access_token;
   }
 
   if (!accessToken) {
-    return NextResponse.json({ error: 'Could not refresh Google token. Please re-login with Google.' }, { status: 403 });
+    return NextResponse.json({
+      error: 'Could not get a valid Google token. Please sign out and sign back in with Google.',
+      needsReauth: true,
+    }, { status: 403 });
   }
 
   const results = { pushed: 0, pulled: 0, errors: [] as string[] };

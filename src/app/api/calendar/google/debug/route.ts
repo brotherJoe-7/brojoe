@@ -41,17 +41,19 @@ export async function GET(req: NextRequest) {
   const hasAccessToken = !!userData?.google_access_token;
   const hasRefreshToken = !!userData?.google_refresh_token;
 
-  // Step 2: try to get a working token
-  let accessToken = userData?.google_access_token;
+  // Step 2: ALWAYS refresh using refresh_token (access tokens expire in 1 hour)
+  let accessToken: string | null = null;
   let tokenRefreshed = false;
 
-  if (!accessToken && userData?.google_refresh_token) {
+  if (userData?.google_refresh_token) {
     accessToken = await refreshGoogleToken(userData.google_refresh_token);
-    tokenRefreshed = true;
     if (accessToken) {
+      tokenRefreshed = true;
       await supabaseAdmin.from('users').update({ google_access_token: accessToken }).eq('id', userId);
     }
   }
+  // Last resort: use the stored token
+  if (!accessToken) accessToken = userData?.google_access_token || null;
 
   if (!accessToken) {
     return NextResponse.json({
