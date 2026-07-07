@@ -84,7 +84,7 @@ export default function Sidebar() {
             {pathname.startsWith('/mentor') && <ChevronRight size={14} className={styles.activeArrow} />}
           </Link>
         )}
-        {session?.user?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL && (
+        {session?.user?.email?.toLowerCase() === process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase() && (
           <Link href="/admin" className={`${styles.navItem} ${pathname.startsWith('/admin') ? styles.active : ''}`}
             style={{ borderColor: 'rgba(244,63,94,0.3)', color: '#f43f5e' }}>
             <Crown size={18} />

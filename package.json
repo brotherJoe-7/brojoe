@@ -14,6 +14,7 @@
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
+    "driver.js": "^1.6.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.23.0",

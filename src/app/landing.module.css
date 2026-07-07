@@ -260,6 +260,19 @@
   color: var(--primary);
 }
 
+/* ── Mobile Nav Overlay ── */
+.mobileMenuBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.mobileNavOverlay {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .heroTitle { font-size: 3.5rem; }
   .featureGrid { grid-template-columns: repeat(2, 1fr); }
@@ -269,6 +282,43 @@
 @media (max-width: 768px) {
   .nav { padding: 20px; }
   .navLinks { display: none; }
+  .mobileMenuBtn { display: block; }
+  
+  .mobileNavOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+  }
+  .mobileNavBox {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-surface);
+    padding: 24px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+  .mobileMenuClose {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    align-self: flex-end;
+    margin-bottom: 32px;
+    cursor: pointer;
+  }
+  .mobileNavLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-size: 1.1rem;
+  }
+
   .heroTitle { font-size: 2.5rem; }
   .heroActions { flex-direction: column; }
   .heroActions a { width: 100%; justify-content: center; }
