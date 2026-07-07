@@ -60,6 +60,21 @@ export default function CalendarPage() {
 
   useEffect(() => { if (status === 'unauthenticated') router.push('/login'); }, [status, router]);
 
+  /* Silent background sync helper */
+  const silentSync = (monthStr: string) => {
+    fetch('/api/calendar/google/sync', { method: 'POST' })
+      .then(r => r.json())
+      .then(syncData => {
+        if (syncData.pulled > 0 || syncData.pushed > 0) {
+          fetch(`/api/events?month=${monthStr}`)
+            .then(r => r.json())
+            .then(evData => { if (Array.isArray(evData)) setEvents(evData); })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
+  };
+
   /* Fetch events, profile, and Google Calendar status */
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -74,39 +89,31 @@ export default function CalendarPage() {
       })
       .catch(() => {});
 
-    // Check if user has Google Calendar connected, then auto-pull silently
+    const monthStr = format(current, 'yyyy-MM');
+
+    // Check connection, then immediately run a silent sync
     fetch('/api/calendar/google/sync')
       .then(r => r.json())
       .then(data => {
         const connected = !!data.connected;
         setGConnected(connected);
-        // Auto-pull new Google events silently on every page load
-        if (connected) {
-          fetch('/api/calendar/google/sync', { method: 'POST' })
-            .then(r => r.json())
-            .then(syncData => {
-              if (syncData.pulled > 0) {
-                // Refresh events list if new events were pulled in
-                const monthStr2 = format(current, 'yyyy-MM');
-                fetch(`/api/events?month=${monthStr2}`)
-                  .then(r => r.json())
-                  .then(evData => { if (Array.isArray(evData)) setEvents(evData); })
-                  .catch(() => {});
-              }
-            })
-            .catch(() => {});
-        }
+        if (connected) silentSync(monthStr);
       })
       .catch(() => {});
 
-    const monthStr = format(current, 'yyyy-MM');
+    // Load BroJoe events for this month
     fetch(`/api/events?month=${monthStr}`)
       .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) setEvents(data);
-      })
+      .then(data => { if (Array.isArray(data) && data.length > 0) setEvents(data); })
       .catch(() => {});
-  }, [status, current]);
+
+    // Auto-sync every 5 minutes while the page is open
+    const interval = setInterval(() => {
+      if (gConnected) silentSync(format(current, 'yyyy-MM'));
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [status, current, gConnected]);
 
   const syncGoogleCalendar = async () => {
     setGSyncing(true);
