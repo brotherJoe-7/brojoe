@@ -29,6 +29,9 @@ export default function Sidebar() {
     <>
       {/* ── Mobile Top Bar ── */}
       <div className={styles.mobileTopBar}>
+        <button className={styles.hamburgerBtn} onClick={() => setMobileOpen(true)}>
+          <Menu size={24} />
+        </button>
         <Link href="/dashboard" className={styles.brand} style={{ margin: 0, padding: 0 }}>
           <div className={styles.brandIcon} style={{ width: 28, height: 28 }}>
             <Sparkles size={16} />
@@ -38,9 +41,6 @@ export default function Sidebar() {
             <span className={styles.brandSub} style={{ fontSize: '0.65rem' }}>Platform v2</span>
           </div>
         </Link>
-        <button className={styles.hamburgerBtn} onClick={() => setMobileOpen(true)}>
-          <Menu size={24} />
-        </button>
       </div>
 
       {/* Backdrop for mobile */}
@@ -92,14 +92,21 @@ export default function Sidebar() {
             {pathname.startsWith('/mentor') && <ChevronRight size={14} className={styles.activeArrow} />}
           </Link>
         )}
-        {session?.user?.email?.toLowerCase() === process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase() && (
-          <Link href="/admin" className={`${styles.navItem} ${pathname.startsWith('/admin') ? styles.active : ''}`}
-            style={{ borderColor: 'rgba(244,63,94,0.3)', color: '#f43f5e' }}>
-            <Crown size={18} />
-            <span>Super Admin</span>
-            {pathname.startsWith('/admin') && <ChevronRight size={14} className={styles.activeArrow} />}
-          </Link>
-        )}
+        {(() => {
+          const email = session?.user?.email?.toLowerCase();
+          const adminEmail1 = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase();
+          const adminEmail2 = 'jnimneh20@gmail.com';
+          const isAdmin = email === adminEmail1 || email === adminEmail2;
+          return isAdmin ? (
+            <Link href="/admin" className={`${styles.navItem} ${pathname.startsWith('/admin') ? styles.active : ''}`}
+              style={{ borderColor: 'rgba(244,63,94,0.3)', color: '#f43f5e' }}
+              onClick={() => setMobileOpen(false)}>
+              <Crown size={18} />
+              <span>Super Admin</span>
+              {pathname.startsWith('/admin') && <ChevronRight size={14} className={styles.activeArrow} />}
+            </Link>
+          ) : null;
+        })()}
       </nav>
 
       <div className={styles.divider} />

@@ -120,7 +120,6 @@ export default async function LandingPage() {
         <div className={styles.footerLinks}>
           <Link href="/terms">Terms of Service</Link>
           <Link href="/privacy">Privacy Policy</Link>
-          <Link href="/forgot-password">Forgot Password?</Link>
         </div>
       </footer>
     </div>

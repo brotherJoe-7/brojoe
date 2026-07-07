@@ -7,8 +7,8 @@ export default function PrivacyPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)', padding: '40px 20px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
-        <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', marginBottom: 32, textDecoration: 'none' }}>
-          <ArrowLeft size={16} /> Back
+        <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', marginBottom: 32, textDecoration: 'none' }}>
+          <ArrowLeft size={16} /> Back to Home
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
