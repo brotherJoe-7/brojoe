@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   // Only the super admin email can access this
-  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
-  if (session.user.email !== superAdminEmail) {
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL?.toLowerCase();
+  if (session.user.email?.toLowerCase() !== superAdminEmail) {
     return NextResponse.json({ error: 'Forbidden. Super Admin access only.' }, { status: 403 });
   }
 

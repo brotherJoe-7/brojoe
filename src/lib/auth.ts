@@ -1,6 +1,7 @@
 // src/lib/auth.ts
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import { authConfig } from './auth.config';
 import { supabaseAdmin, isSupabaseConfigured } from './supabase';
@@ -55,5 +56,37 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
       },
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
+  callbacks: {
+    ...authConfig.callbacks,
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        const email = user.email!.toLowerCase();
+        if (isSupabaseConfigured() && supabaseAdmin) {
+          const { data: existingUser } = await supabaseAdmin.from('users').select('*').eq('email', email).single();
+          if (!existingUser) {
+            const { data: newUser } = await supabaseAdmin.from('users').insert([{
+              name: user.name || 'Google User',
+              email: email,
+              password: 'google_oauth_no_password',
+              role: 'user',
+              avatar: user.image || ''
+            }]).select().single();
+            if (newUser) {
+              user.id = newUser.id;
+              (user as any).role = newUser.role;
+            }
+          } else {
+            user.id = existingUser.id;
+            (user as any).role = existingUser.role;
+          }
+        }
+      }
+      return true;
+    }
+  }
 });
