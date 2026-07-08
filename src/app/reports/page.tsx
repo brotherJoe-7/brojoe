@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import {
   Sparkles, Send, FileText, Download, Share2, MessageSquare,
-  Loader, Copy, Check, ExternalLink, RefreshCw, Image as ImageIcon
+  Loader, Copy, Check, ExternalLink, RefreshCw, Image as ImageIcon, Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import styles from './reports.module.css';
@@ -42,6 +42,16 @@ export default function ReportsPage() {
     const res = await fetch('/api/reports');
     const data = await res.json();
     setReports(data || []);
+  };
+
+  const deleteReport = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this report?')) return;
+    try {
+      const res = await fetch(`/api/reports/${id}`, { method: 'DELETE' });
+      if (res.ok) fetchReports();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const sendMessage = async () => {
@@ -322,6 +332,9 @@ export default function ReportsPage() {
                           </button>
                           <button className="btn btn-success btn-sm" title="Share to WhatsApp" onClick={() => shareWhatsApp(r)} style={{ padding: '4px 10px', fontSize: '0.75rem', gap: 4 }}>
                             <Share2 size={12} /> WhatsApp
+                          </button>
+                          <button className="btn btn-ghost btn-icon btn-sm text-danger" title="Delete Report" onClick={() => deleteReport(r._id)}>
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </div>
