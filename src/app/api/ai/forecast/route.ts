@@ -77,7 +77,7 @@ Your analysis should:
 
 Format as a professional executive briefing. Use bold headers. Be direct, inspiring, and realistic.`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     const result = await model.generateContent(prompt);
     return NextResponse.json({ forecast: result.response.text() });
   } catch (error) {
