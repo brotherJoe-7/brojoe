@@ -92,7 +92,7 @@ If the user greets you or asks a casual question, respond warmly and offer to he
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-1.5-flash',
       systemInstruction: systemPrompt,
     });
 

@@ -155,12 +155,15 @@ a:hover { color: var(--primary); }
   background: var(--bg-card);
 }
 .btn-danger {
-  background: rgba(255, 107, 107, 0.15);
-  color: var(--accent);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  background: #e53e3e;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.35);
 }
 .btn-danger:hover {
-  background: rgba(255, 107, 107, 0.25);
+  background: #c53030;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(229, 62, 62, 0.5);
 }
 .btn-success {
   background: rgba(0, 217, 165, 0.15);
