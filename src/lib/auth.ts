@@ -1,4 +1,3 @@
-// src/lib/auth.ts
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
@@ -17,7 +16,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const trimmedEmail = email.trim().toLowerCase();
 
         // ── Demo bypass ───────────────────────────────────────────
-        if (trimmedEmail === 'mentor@brojoe.com' && password === 'mentor123') {
+        const demoEmail = process.env.MENTOR_EMAIL ?? '';
+        const demoPassword = process.env.MENTOR_PASSWORD ?? '';
+        if (trimmedEmail === demoEmail && password === demoPassword) {
           return { id: 'test-mentor-id', name: 'BroJoe Mentor', email: 'mentor@brojoe.com', role: 'mentor' };
         }
 
